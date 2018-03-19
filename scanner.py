@@ -1,7 +1,13 @@
+"""
+Sample script to test ad-hoc scanning by table drive.
+This accepts "term","test" and "long" words.
+"""
+import re
 
 def getchar(words,pos):
 	""" returns char at pos of words, or None if out of bounds """
-
+	rexp = re.compile(r'\d\d[.|:]\d\d');
+	m = rexp.search('[0:1]?[0:9][:|.][0:5]?[0:9]|2[0:3][:|.][0:5]?[0:9]|[3:9][:|.][0:9]')
 	if pos<0 or pos>=len(words): return None
 
 	return words[pos]
@@ -37,25 +43,18 @@ def scan(text,transition_table,accept_states):
 			
 	
 # the transition table, as a dictionary
-
-# Αντικαταστήστε με το δικό σας λεξικό μεταβάσεων...
-td = { 'q0':{ 't':'q1','l':'q2' },
-       'q1':{ 'e':'q3' },
-       'q2':{ 'o':'q8' },
-       'q3':{ 's':'q4','r':'q6' },
-       'q4':{ 't':'q5' },
-       'q6':{ 'm':'q7' },
-       'q8':{ 'n':'q9' },
-       'q9':{ 'g':'q10'}
+td = { 'q0':{'0:1':'q1', '2':'q2', '3:9':'q3' },
+       'q1':{'0:9':'q4' },
+       'q2':{'0:3':'q4' },
+       'q3':{'.':'q5' },
+       'q4':{':':'q5' },
+       'q5':{'0:5':'q6' },
+       'q6':{'0:9':'q7' }
      } 
 
 # the dictionary of accepting states and their
 # corresponding token
-
-# Αντικαταστήστε με το δικό σας λεξικό καταστάσεων αποδοχής...
-ad = { 'q5':'TEST_TOKEN',
-       'q7':'TERM_TOKEN',
-       'q10':'LONG_TOKEN'
+ad = { 'q7':'TIME_TOKEN'
      }
 
 
@@ -76,4 +75,3 @@ while text:	# that is, while len(text)>0
 	
 	# remaining text for next scan
 	text = text[position:]
-	
